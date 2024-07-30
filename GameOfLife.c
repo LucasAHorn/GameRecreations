@@ -8,15 +8,15 @@
 
 #include <stdio.h>
 
-// these store the width and height of the grid
-int width;
-int height;
+// these store the WIDTH and HEIGHT of the grid
+int WIDTH;
+int HEIGHT;
 
 // this prints the grid
-void printGrid(int grid[width][height]) {
+void printGrid(int grid[WIDTH][HEIGHT]) {
     printf("\n");
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             printf(" %d ", grid[x][y]);
         }
         printf("\n");
@@ -24,49 +24,58 @@ void printGrid(int grid[width][height]) {
     printf("\n");
 }
 
-void printCoords(int grid[width][height]) {
+// This returns the board printed with coords and if it is filled in
+void printCoords(int grid[WIDTH][HEIGHT]) {
     printf("\n");
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             // printf(" %d ", grid[x][y]);
             printf("\t%d,%d,%d", x, y, grid[x][y]);
         }
         printf("\n");
     }
     printf("\n");
-    printGrid(grid);
+}
+
+// makes grid[x][y] = 1 returns 1 if successful, 0 if failed
+int makeLivingCell(int grid[WIDTH][HEIGHT], int x, int y) {
+    if ((x >= 0) && (x < WIDTH) && (y >= 0) && (y < HEIGHT)){
+        grid[x][y] = 1;
+        return 1;
+    }
+    return 0;
 }
 
 // this updates the grid
-void updateGrid(int grid[width][height]){
+void updateGrid(int grid[WIDTH][HEIGHT]){
 
     // calculating dead and alive cells
-    int newGrid[width][height]; 
+    int newGrid[WIDTH][HEIGHT]; 
     int neighbors;
 
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             neighbors = 0;
 
             // check left
             if (x > 0) {
                 if (grid[x - 1][y] == 1) {neighbors++;}
                 if ((y > 0) && (grid[x - 1][y - 1] == 1)) {neighbors++;}
-                if ((y < height - 1) && (grid[x - 1][y + 1] == 1)) {neighbors++;}
+                if ((y < HEIGHT - 1) && (grid[x - 1][y + 1] == 1)) {neighbors++;}
             }
             // check right
-            if (x < width - 1) {
+            if (x < WIDTH - 1) {
                 if (grid[x + 1][y] == 1) {neighbors++;}
                 if ((y > 0) && (grid[x + 1][y - 1] == 1)) {neighbors++;}
-                if ((y < height - 1) && (grid[x + 1][y + 1] == 1)) {neighbors++;}
+                if ((y < HEIGHT - 1) && (grid[x + 1][y + 1] == 1)) {neighbors++;}
             }
             // vertical
             if ((y > 0) && (grid[x][y - 1] == 1)) {neighbors++;}
-            if ((y < height - 1) && (grid[x][y - 1] == 1)) {neighbors++;}
+            if ((y < HEIGHT - 1) && (grid[x][y - 1] == 1)) {neighbors++;}
 
 
             // rules are found on playgameoflife.com/info
-            if (grid[x][y] == 0) {
+            if (grid[x][y] == 1) {
                 if (neighbors <= 1) {
                     newGrid[x][y] = 0;
                 } else if (neighbors <= 3) {
@@ -75,7 +84,7 @@ void updateGrid(int grid[width][height]){
                     newGrid[x][y] = 0;
                 }
             } else {
-                if (neighbors = 3) {
+                if (neighbors == 3) {
                     newGrid[x][y] = 1;
                 } else {
                     newGrid[x][y] = 0;
@@ -84,17 +93,17 @@ void updateGrid(int grid[width][height]){
         }
     }
     
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             grid[x][y] = newGrid[x][y];
         }
     }
 }
 
 // This checks if the grid is empty
-int isEmptyGrid(int grid[width][height]) {
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
+int isEmptyGrid(int grid[WIDTH][HEIGHT]) {
+    for (int y = 0; y < HEIGHT; y++) {
+        for (int x = 0; x < WIDTH; x++) {
             if (grid[x][y] == 1) {return 0;}
         }
     }
@@ -106,19 +115,19 @@ int isEmptyGrid(int grid[width][height]) {
 int main() {
     printf("\nSpecify number of columns and rows like 12x34, max values are 80x80\n\n");
     
-    scanf("%dx%d", &width, &height);
+    scanf("%dx%d", &WIDTH, &HEIGHT);
 
-    if ((height <= 0) || (height > 80) || (width <= 0) || (width > 80)) {
-            printf("invalid dimensions: %d x %d", width, height);
+    if ((HEIGHT <= 0) || (HEIGHT > 80) || (WIDTH <= 0) || (WIDTH > 80)) {
+            printf("invalid dimensions: %d x %d", WIDTH, HEIGHT);
             return -1;
         }
 
-    printf("\ncreating a grid of dimensions: %d x %d\n", width, height);
+    printf("\ncreating a grid of dimensions: %d x %d\n", WIDTH, HEIGHT);
 
-    int grid[width][height];
+    int grid[WIDTH][HEIGHT];
 
-    for (int x = 0; x < width; x++) {
-        for (int y = 0; y < height; y++) {
+    for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < HEIGHT; y++) {
             grid[x][y] = 0;
         }
     }
@@ -137,18 +146,46 @@ int main() {
         printf("\n\nThe format of this grid is <x-coord>, <y-coord>, <is filled in>");
         printCoords(grid);
 
-
+        // coords for the questions
+        int x;
+        int y;
             // This portion is still unfinished
-            // todo: finish filling in sections
-        if (selection == 'a') {
+            // todo: finish filling in sectionssea
+        if (selection == 'a') {         // single square
+            printf("\nWhat coordinate would you like to fill in? (Format: 12x13\nCoordinate: ");
+            scanf(" %dx%d", &x, &y);
+            
+            if (makeLivingCell(grid, x, y)) {
+                printf("\nSuccess at selecting cell\n");
+            } else {
+                printf("\nFailed to make living cell at: (%d, %d)", x, y);
+            }
 
-        } else if (selection == 'b') {
 
-        } else if (selection == 'c') {
 
-        } else {
+        } else if (selection == 'b') {  // rectangle (multiple)
+            int x1;
+            int y1;
+            printf("\nWhat coordinates would you like to fill in? (format: 12x13)\nTop left corner: ");
+            scanf(" %dx%d", &x, &y);
 
+            printf("\nBottom right corner: ");
+            scanf(" %dx%d", &x1, &y1);
+
+            for (int i = x; i <= x1; i++){
+                for (int j = y; j <= y1; j++) {
+                    makeLivingCell(grid, i, j);
+                }
+            }
+
+            
+        } else if (selection == 'c') {  // column
+            printf("\nWhat column would you like to fill in?");
+        } else {                        // row
+            printf("\nWhat row would you like to fill in?");
         }
+
+        printGrid(grid);
         
 
 
@@ -166,7 +203,7 @@ int main() {
 
         printf("tick %d", tick);
         printGrid(grid);
-    } while (!isEmptyGrid(grid) || tick > 150);
+    } while ((!isEmptyGrid(grid)) && (tick < 50));
 
     return 0;
 }
