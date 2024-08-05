@@ -7,6 +7,7 @@
 
 
 #include <stdio.h>
+#include <string.h>
 
 // these store the WIDTH and HEIGHT of the grid
 int WIDTH;
@@ -14,14 +15,22 @@ int HEIGHT;
 
 // this prints the grid
 void printGrid(int grid[WIDTH][HEIGHT]) {
-    printf("\n");
+    char str[WIDTH * 3 + 1];
+    memset(str, '-', WIDTH * 3);
+    str[WIDTH * 3] = '\0';
+
+    printf("\n|%s|\n|", str);
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
-            printf(" %d ", grid[x][y]);
+            if (grid[x][y]) {
+                printf(" X ");
+            } else {
+                printf("   ");
+            }
         }
-        printf("\n");
+        printf("|\n|");
     }
-    printf("\n");
+    printf("%s|\n", str);
 }
 
 // This returns the board printed with coords and if it is filled in
@@ -50,7 +59,7 @@ int makeLivingCell(int grid[WIDTH][HEIGHT], int x, int y) {
 void updateGrid(int grid[WIDTH][HEIGHT]){
 
     // calculating dead and alive cells
-    int newGrid[WIDTH][HEIGHT]; 
+    int newGrid[WIDTH][HEIGHT];
     int neighbors;
 
     for (int y = 0; y < HEIGHT; y++) {
@@ -71,7 +80,7 @@ void updateGrid(int grid[WIDTH][HEIGHT]){
             }
             // vertical
             if ((y > 0) && (grid[x][y - 1] == 1)) {neighbors++;}
-            if ((y < HEIGHT - 1) && (grid[x][y - 1] == 1)) {neighbors++;}
+            if ((y < HEIGHT - 1) && (grid[x][y + 1] == 1)) {neighbors++;}
 
 
             // rules are found on playgameoflife.com/info
@@ -111,7 +120,6 @@ int isEmptyGrid(int grid[WIDTH][HEIGHT]) {
 }
 
 
-
 int main() {
     printf("\nSpecify number of columns and rows like 12x34, max values are 80x80\n\n");
     
@@ -136,12 +144,13 @@ int main() {
 
     // user selects the sections 
     char selection;
-    char endLoop;
     do {
         do {
-            printf("\nYour options are:\n'a' - fill in a single grid square\n'b' - fill in a rectangle (multiple grid squares)\n'c' - fill in a column\n'd' - fill in a row\n");
+            printf("\nYour options are:\n'a' - fill in a single grid square\n'b' - fill in a rectangle (multiple grid squares)\n'c' - fill in a column\n'd' - fill in a row\n'r' - run the program\nyour selection: ");
             scanf(" %c", &selection);
-        } while ((selection < 'a') || (selection > 'd'));
+        } while (((selection < 'a') || (selection > 'd')) && (selection != 'r'));
+
+        if (selection == 'r') {break;}
 
         printf("\n\nThe format of this grid is <x-coord>, <y-coord>, <is filled in>");
         printCoords(grid);
@@ -180,22 +189,30 @@ int main() {
 
             
         } else if (selection == 'c') {  // column
-            printf("\nWhat column would you like to fill in?");
+            printf("\nWhat column would you like to fill in? x-coord: ");
+            
+            scanf(" %d", &x);
+            for (y = 0; y < HEIGHT; y++) {
+                makeLivingCell(grid, x, y);
+            }
+
         } else {                        // row
-            printf("\nWhat row would you like to fill in?");
+            printf("\nWhat row would you like to fill in? y-coord: ");
+
+            scanf(" %d", &y);
+            for (x = 0; x < WIDTH; x++) {
+                makeLivingCell(grid, x, y);
+            }
         }
 
         printGrid(grid);
-        
-
-
-        printf("respond 'y' if you would like to run the program: ");
-        scanf(" %c", &endLoop);
-
-    } while (endLoop != 'y');
+    } while (1);    // goes until the break statement
     
-    
+    int maxTicks;
+    printf("Max ticks sumulated: ");
+    scanf(" %d", &maxTicks);
 
+    printGrid(grid);
     int tick = 0;
     do {
         updateGrid(grid);
@@ -203,7 +220,9 @@ int main() {
 
         printf("tick %d", tick);
         printGrid(grid);
-    } while ((!isEmptyGrid(grid)) && (tick < 50));
+
+        for (long i = 0; i < 500000000; i++);
+    } while ((!isEmptyGrid(grid)) && (tick < maxTicks));
 
     return 0;
 }
