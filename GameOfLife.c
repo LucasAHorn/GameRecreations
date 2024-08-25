@@ -1,7 +1,7 @@
 // This will hold the entire game of life
 
 // commands for running
-    // cd C:/Users/Lucas/Documents/GitHub/GameRecreations
+    // cd C:/Users/Lucas/Documents/GitHub/GameRecreations       <-- replace this with your filepath
     // gcc GameOfLife.c -o GameOfLife
     // ./GameOfLife
 
@@ -46,7 +46,7 @@ void printCoords(int grid[WIDTH][HEIGHT]) {
     printf("\n");
 }
 
-// makes grid[x][y] = 1 returns 1 if successful, 0 if failed
+// makes grid[x][y] = 1, takes in <grid, x coord, y coord>
 int makeLivingCell(int grid[WIDTH][HEIGHT], int x, int y) {
     if ((x >= 0) && (x < WIDTH) && (y >= 0) && (y < HEIGHT)){
         grid[x][y] = 1;
@@ -82,7 +82,6 @@ void updateGrid(int grid[WIDTH][HEIGHT]){
             if ((y > 0) && (grid[x][y - 1] == 1)) {neighbors++;}
             if ((y < HEIGHT - 1) && (grid[x][y + 1] == 1)) {neighbors++;}
 
-
             // rules are found on playgameoflife.com/info
             if (grid[x][y] == 1) {
                 if (neighbors <= 1) {
@@ -109,7 +108,7 @@ void updateGrid(int grid[WIDTH][HEIGHT]){
     }
 }
 
-// This checks if the grid is empty
+// This checks if the grid is empty, returns 1 if empty, 0 otherwise
 int isEmptyGrid(int grid[WIDTH][HEIGHT]) {
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
@@ -142,7 +141,6 @@ int main() {
 
     printGrid(grid);
 
-    // user selects the sections 
     char selection;
     do {
         do {
@@ -158,8 +156,6 @@ int main() {
         // coords for the questions
         int x;
         int y;
-            // This portion is still unfinished
-            // todo: finish filling in sectionssea
         if (selection == 'a') {         // single square
             printf("\nWhat coordinate would you like to fill in? (Format: 12x13\nCoordinate: ");
             scanf(" %dx%d", &x, &y);
@@ -169,8 +165,6 @@ int main() {
             } else {
                 printf("\nFailed to make living cell at: (%d, %d)", x, y);
             }
-
-
 
         } else if (selection == 'b') {  // rectangle (multiple)
             int x1;
@@ -186,7 +180,6 @@ int main() {
                     makeLivingCell(grid, i, j);
                 }
             }
-
             
         } else if (selection == 'c') {  // column
             printf("\nWhat column would you like to fill in? x-coord: ");
@@ -221,7 +214,7 @@ int main() {
         printf("tick %d", tick);
         printGrid(grid);
 
-        for (long i = 0; i < 500000000; i++);
+        for (long i = 0; i < 500000000; i++);           // this slows down the rendering, alter this if needed
     } while ((!isEmptyGrid(grid)) && (tick < maxTicks));
 
     return 0;
